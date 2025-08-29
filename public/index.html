@@ -1,43 +1,914 @@
 <!DOCTYPE html>
 <html lang="en">
-  <head>
-    <meta charset="utf-8" />
-    <link rel="icon" href="%PUBLIC_URL%/favicon.ico" />
-    <meta name="viewport" content="width=device-width, initial-scale=1" />
-    <meta name="theme-color" content="#000000" />
-    <meta
-      name="description"
-      content="Web site created using create-react-app"
-    />
-    <link rel="apple-touch-icon" href="%PUBLIC_URL%/logo192.png" />
-    <!--
-      manifest.json provides metadata used when your web app is installed on a
-      user's mobile device or desktop. See https://developers.google.com/web/fundamentals/web-app-manifest/
-    -->
-    <link rel="manifest" href="%PUBLIC_URL%/manifest.json" />
-    <!--
-      Notice the use of %PUBLIC_URL% in the tags above.
-      It will be replaced with the URL of the `public` folder during the build.
-      Only files inside the `public` folder can be referenced from the HTML.
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Indian Stock Market Dashboard</title>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0-alpha1/dist/css/bootstrap.min.css" rel="stylesheet">
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/luxon@3.0.4/build/global/luxon.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/chartjs-adapter-luxon@1.2.0"></script>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
+    <style>
+        :root {
+            --primary: #2c3e50;
+            --secondary: #34495e;
+            --accent: #3498db;
+            --profit: #2ecc71;
+            --loss: #e74c3c;
+            --neutral: #f39c12;
+        }
+        
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background-color: #f8f9fa;
+            color: #333;
+        }
+        
+        .navbar {
+            background: linear-gradient(135deg, var(--primary) 0%, var(--secondary) 100%);
+            box-shadow: 0 4px 15px rgba(0, 0, 0, 0.1);
+        }
+        
+        .card {
+            border-radius: 12px;
+            box-shadow: 0 6px 15px rgba(0, 0, 0, 0.08);
+            transition: transform 0.3s ease;
+            margin-bottom: 20px;
+            border: none;
+        }
+        
+        .card:hover {
+            transform: translateY(-5px);
+        }
+        
+        .card-header {
+            background: linear-gradient(135deg, var(--primary) 0%, var(--secondary) 100%);
+            color: white;
+            border-radius: 12px 12px 0 0 !important;
+            font-weight: 600;
+        }
+        
+        .stock-card {
+            cursor: pointer;
+            transition: all 0.3s;
+        }
+        
+        .stock-card:hover {
+            background-color: #f8f9fa;
+        }
+        
+        .positive {
+            color: var(--profit);
+            font-weight: 600;
+        }
+        
+        .negative {
+            color: var(--loss);
+            font-weight: 600;
+        }
+        
+        .neutral {
+            color: var(--neutral);
+            font-weight: 600;
+        }
+        
+        .nav-tabs .nav-link {
+            color: var(--secondary);
+            font-weight: 500;
+            border: none;
+            padding: 12px 20px;
+        }
+        
+        .nav-tabs .nav-link.active {
+            background: linear-gradient(135deg, var(--primary) 0%, var(--secondary) 100%);
+            color: white;
+            border-radius: 8px;
+            border: none;
+        }
+        
+        .search-box {
+            border-radius: 50px;
+            padding: 10px 20px;
+            border: 2px solid var(--accent);
+        }
+        
+        .btn-search {
+            background: linear-gradient(135deg, var(--primary) 0%, var(--secondary) 100%);
+            color: white;
+            border-radius: 50px;
+            padding: 10px 25px;
+            border: none;
+        }
+        
+        .btn-search:hover {
+            background: linear-gradient(135deg, var(--secondary) 0%, var(--primary) 100%);
+        }
+        
+        .prediction-badge {
+            padding: 6px 12px;
+            border-radius: 20px;
+            font-size: 12px;
+            font-weight: 600;
+        }
+        
+        .prediction-up {
+            background-color: rgba(46, 204, 113, 0.2);
+            color: var(--profit);
+        }
+        
+        .prediction-down {
+            background-color: rgba(231, 76, 60, 0.2);
+            color: var(--loss);
+        }
+        
+        .frequency-table {
+            font-size: 14px;
+        }
+        
+        .frequency-table th {
+            background-color: var(--primary);
+            color: white;
+        }
+        
+        .chart-container {
+            position: relative;
+            height: 400px;
+            width: 100%;
+        }
+        
+        .loader {
+            border: 5px solid #f3f3f3;
+            border-top: 5px solid var(--accent);
+            border-radius: 50%;
+            width: 50px;
+            height: 50px;
+            animation: spin 1s linear infinite;
+            margin: 20px auto;
+        }
+        
+        @keyframes spin {
+            0% { transform: rotate(0deg); }
+            100% { transform: rotate(360deg); }
+        }
+        
+        .market-status {
+            padding: 8px 15px;
+            border-radius: 20px;
+            font-weight: 600;
+            font-size: 14px;
+        }
+        
+        .open {
+            background-color: rgba(46, 204, 113, 0.2);
+            color: var(--profit);
+        }
+        
+        .closed {
+            background-color: rgba(231, 76, 60, 0.2);
+            color: var(--loss);
+        }
+        
+        .section-title {
+            border-left: 4px solid var(--accent);
+            padding-left: 10px;
+            margin: 25px 0 15px;
+        }
+    </style>
+</head>
+<body>
+    <!-- Navigation Bar -->
+    <nav class="navbar navbar-expand-lg navbar-dark">
+        <div class="container">
+            <a class="navbar-brand" href="#">
+                <i class="fas fa-chart-line"></i> Indian Stock Analytics
+            </a>
+            <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNav">
+                <span class="navbar-toggler-icon"></span>
+            </button>
+            <div class="collapse navbar-collapse" id="navbarNav">
+                <ul class="navbar-nav me-auto">
+                    <li class="nav-item">
+                        <a class="nav-link active" href="#dashboard"><i class="fas fa-home"></i> Dashboard</a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link" href="#tomorrow"><i class="fas fa-calendar-day"></i> Tomorrow's Picks</a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link" href="#frequency"><i class="fas fa-wave-square"></i> Frequency Analysis</a>
+                    </li>
+                </ul>
+                <div class="d-flex">
+                    <input class="form-control me-2 search-box" type="search" placeholder="Search NSE/BSE stocks..." id="searchInput">
+                    <button class="btn btn-search" type="button" id="searchBtn"><i class="fas fa-search"></i></button>
+                </div>
+            </div>
+        </div>
+    </nav>
 
-      Unlike "/favicon.ico" or "favicon.ico", "%PUBLIC_URL%/favicon.ico" will
-      work correctly both with client-side routing and a non-root public URL.
-      Learn how to configure a non-root public URL by running `npm run build`.
-    -->
-    <title>React App</title>
-  </head>
-  <body>
-    <noscript>You need to enable JavaScript to run this app.</noscript>
-    <div id="root"></div>
-    <!--
-      This HTML file is a template.
-      If you open it directly in the browser, you will see an empty page.
+    <div class="container mt-4">
+        <!-- Market Status -->
+        <div class="d-flex justify-content-between align-items-center mb-4">
+            <h2>Stock Market Dashboard</h2>
+            <div class="market-status open">Market Open</div>
+        </div>
 
-      You can add webfonts, meta tags, or analytics to this file.
-      The build step will place the bundled scripts into the <body> tag.
+        <!-- Main Dashboard -->
+        <div id="dashboard">
+            <div class="row">
+                <!-- Left Column -->
+                <div class="col-lg-8">
+                    <!-- Stock Chart -->
+                    <div class="card">
+                        <div class="card-header d-flex justify-content-between align-items-center">
+                            <span>RELIANCE - Reliance Industries Ltd</span>
+                            <div class="btn-group">
+                                <button class="btn btn-sm btn-outline-light active">1D</button>
+                                <button class="btn btn-sm btn-outline-light">1W</button>
+                                <button class="btn btn-sm btn-outline-light">1M</button>
+                                <button class="btn btn-sm btn-outline-light">3M</button>
+                            </div>
+                        </div>
+                        <div class="card-body">
+                            <div class="d-flex justify-content-between align-items-center mb-3">
+                                <h3 class="m-0">₹2,758.45 <span class="positive">+1.25%</span></h3>
+                                <div>NSE: RELIANCE | BSE: 500325</div>
+                            </div>
+                            <div class="chart-container">
+                                <canvas id="stockChart"></canvas>
+                            </div>
+                        </div>
+                    </div>
 
-      To begin the development, run `npm start` or `yarn start`.
-      To create a production bundle, use `npm run build` or `yarn build`.
-    -->
-  </body>
+                    <!-- Technical Indicators -->
+                    <div class="card">
+                        <div class="card-header">Technical Indicators</div>
+                        <div class="card-body">
+                            <div class="row text-center">
+                                <div class="col-md-3">
+                                    <div class="fw-bold">RSI (14)</div>
+                                    <div class="neutral">56.2</div>
+                                    <div class="small text-muted">Neutral</div>
+                                </div>
+                                <div class="col-md-3">
+                                    <div class="fw-bold">MACD</div>
+                                    <div class="positive">12.4</div>
+                                    <div class="small text-muted">Bullish</div>
+                                </div>
+                                <div class="col-md-3">
+                                    <div class="fw-bold">50 DMA</div>
+                                    <div>₹2,712.36</div>
+                                    <div class="small text-muted">Support</div>
+                                </div>
+                                <div class="col-md-3">
+                                    <div class="fw-bold">200 DMA</div>
+                                    <div>₹2,645.82</div>
+                                    <div class="small text-muted">Strong Support</div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Right Column -->
+                <div class="col-lg-4">
+                    <!-- Top Gainers -->
+                    <div class="card">
+                        <div class="card-header">Top Gainers <span class="float-end"><i class="fas fa-arrow-up"></i></span></div>
+                        <div class="card-body p-0">
+                            <ul class="list-group list-group-flush">
+                                <li class="list-group-item stock-card">
+                                    <div class="d-flex justify-content-between">
+                                        <div>INFY</div>
+                                        <div class="positive">+3.2%</div>
+                                    </div>
+                                    <div class="d-flex justify-content-between text-muted small">
+                                        <div>Infosys Ltd</div>
+                                        <div>₹1,845.60</div>
+                                    </div>
+                                </li>
+                                <li class="list-group-item stock-card">
+                                    <div class="d-flex justify-content-between">
+                                        <div>HDFCBANK</div>
+                                        <div class="positive">+2.8%</div>
+                                    </div>
+                                    <div class="d-flex justify-content-between text-muted small">
+                                        <div>HDFC Bank Ltd</div>
+                                        <div>₹1,642.25</div>
+                                    </div>
+                                </li>
+                                <li class="list-group-item stock-card">
+                                    <div class="d-flex justify-content-between">
+                                        <div>TCS</div>
+                                        <div class="positive">+2.5%</div>
+                                    </div>
+                                    <div class="d-flex justify-content-between text-muted small">
+                                        <div>Tata Consultancy</div>
+                                        <div>₹3,458.90</div>
+                                    </div>
+                                </li>
+                                <li class="list-group-item stock-card">
+                                    <div class="d-flex justify-content-between">
+                                        <div>BAJFINANCE</div>
+                                        <div class="positive">+2.1%</div>
+                                    </div>
+                                    <div class="d-flex justify-content-between text-muted small">
+                                        <div>Bajaj Finance</div>
+                                        <div>₹7,245.35</div>
+                                    </div>
+                                </li>
+                            </ul>
+                        </div>
+                    </div>
+
+                    <!-- Top Losers -->
+                    <div class="card">
+                        <div class="card-header">Top Losers <span class="float-end"><i class="fas fa-arrow-down"></i></span></div>
+                        <div class="card-body p-0">
+                            <ul class="list-group list-group-flush">
+                                <li class="list-group-item stock-card">
+                                    <div class="d-flex justify-content-between">
+                                        <div>ITC</div>
+                                        <div class="negative">-1.8%</div>
+                                    </div>
+                                    <div class="d-flex justify-content-between text-muted small">
+                                        <div>ITC Ltd</div>
+                                        <div>₹425.70</div>
+                                    </div>
+                                </li>
+                                <li class="list-group-item stock-card">
+                                    <div class="d-flex justify-content-between">
+                                        <div>ONGC</div>
+                                        <div class="negative">-1.5%</div>
+                                    </div>
+                                    <div class="d-flex justify-content-between text-muted small">
+                                        <div>Oil & Natural Gas</div>
+                                        <div>₹162.35</div>
+                                    </div>
+                                </li>
+                                <li class="list-group-item stock-card">
+                                    <div class="d-flex justify-content-between">
+                                        <div>HINDUNILVR</div>
+                                        <div class="negative">-1.2%</div>
+                                    </div>
+                                    <div class="d-flex justify-content-between text-muted small">
+                                        <div>Hindustan Unilever</div>
+                                        <div>₹2,458.90</div>
+                                    </div>
+                                </li>
+                                <li class="list-group-item stock-card">
+                                    <div class="d-flex justify-content-between">
+                                        <div>SBIN</div>
+                                        <div class="negative">-0.9%</div>
+                                    </div>
+                                    <div class="d-flex justify-content-between text-muted small">
+                                        <div>State Bank of India</div>
+                                        <div>₹585.45</div>
+                                    </div>
+                                </li>
+                            </ul>
+                        </div>
+                    </div>
+
+                    <!-- Market Indices -->
+                    <div class="card">
+                        <div class="card-header">Market Indices</div>
+                        <div class="card-body p-0">
+                            <ul class="list-group list-group-flush">
+                                <li class="list-group-item">
+                                    <div class="d-flex justify-content-between">
+                                        <div>NIFTY 50</div>
+                                        <div class="positive">+0.8%</div>
+                                    </div>
+                                    <div class="d-flex justify-content-between text-muted small">
+                                        <div>19,845.60</div>
+                                        <div>+155.70</div>
+                                    </div>
+                                </li>
+                                <li class="list-group-item">
+                                    <div class="d-flex justify-content-between">
+                                        <div>SENSEX</div>
+                                        <div class="positive">+0.7%</div>
+                                    </div>
+                                    <div class="d-flex justify-content-between text-muted small">
+                                        <div>66,812.45</div>
+                                        <div>+435.25</div>
+                                    </div>
+                                </li>
+                                <li class="list-group-item">
+                                    <div class="d-flex justify-content-between">
+                                        <div>NIFTY BANK</div>
+                                        <div class="positive">+1.1%</div>
+                                    </div>
+                                    <div class="d-flex justify-content-between text-muted small">
+                                        <div>44,125.80</div>
+                                        <div>+482.60</div>
+                                    </div>
+                                </li>
+                            </ul>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Tomorrow's Picks Section -->
+        <div id="tomorrow" class="mt-5">
+            <h3 class="section-title">Tomorrow's Stock Recommendations</h3>
+            <p class="text-muted">Stocks predicted to perform well based on technical analysis and AI algorithms</p>
+            
+            <div class="row">
+                <div class="col-md-6">
+                    <div class="card">
+                        <div class="card-header">Top Buys for Tomorrow</div>
+                        <div class="card-body p-0">
+                            <div class="table-responsive">
+                                <table class="table table-hover m-0">
+                                    <thead class="table-light">
+                                        <tr>
+                                            <th>Stock</th>
+                                            <th>Current</th>
+                                            <th>Target</th>
+                                            <th>Stop Loss</th>
+                                            <th>Confidence</th>
+                                        </tr>
+                                    </thead>
+                                    <tbody>
+                                        <tr>
+                                            <td>RELIANCE</td>
+                                            <td>₹2,758.45</td>
+                                            <td class="positive">₹2,850.00</td>
+                                            <td class="negative">₹2,710.00</td>
+                                            <td><span class="prediction-badge prediction-up">85%</span></td>
+                                        </tr>
+                                        <tr>
+                                            <td>INFY</td>
+                                            <td>₹1,845.60</td>
+                                            <td class="positive">₹1,920.00</td>
+                                            <td class="negative">₹1,800.00</td>
+                                            <td><span class="prediction-badge prediction-up">78%</span></td>
+                                        </tr>
+                                        <tr>
+                                            <td>BAJFINANCE</td>
+                                            <td>₹7,245.35</td>
+                                            <td class="positive">₹7,500.00</td>
+                                            <td class="negative">₹7,100.00</td>
+                                            <td><span class="prediction-badge prediction-up">82%</span></td>
+                                        </tr>
+                                        <tr>
+                                            <td>HDFCBANK</td>
+                                            <td>₹1,642.25</td>
+                                            <td class="positive">₹1,700.00</td>
+                                            <td class="negative">₹1,610.00</td>
+                                            <td><span class="prediction-badge prediction-up">80%</span></td>
+                                        </tr>
+                                    </tbody>
+                                </table>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <div class="col-md-6">
+                    <div class="card">
+                        <div class="card-header">Potential Shorts for Tomorrow</div>
+                        <div class="card-body p-0">
+                            <div class="table-responsive">
+                                <table class="table table-hover m-0">
+                                    <thead class="table-light">
+                                        <tr>
+                                            <th>Stock</th>
+                                            <th>Current</th>
+                                            <th>Target</th>
+                                            <th>Stop Loss</th>
+                                            <th>Confidence</th>
+                                        </tr>
+                                    </thead>
+                                    <tbody>
+                                        <tr>
+                                            <td>ITC</td>
+                                            <td>₹425.70</td>
+                                            <td class="negative">₹410.00</td>
+                                            <td class="positive">₹435.00</td>
+                                            <td><span class="prediction-badge prediction-down">75%</span></td>
+                                        </tr>
+                                        <tr>
+                                            <td>ONGC</td>
+                                            <td>₹162.35</td>
+                                            <td class="negative">₹155.00</td>
+                                            <td class="positive">₹168.00</td>
+                                            <td><span class="prediction-badge prediction-down">70%</span></td>
+                                        </tr>
+                                        <tr>
+                                            <td>HINDUNILVR</td>
+                                            <td>₹2,458.90</td>
+                                            <td class="negative">₹2,400.00</td>
+                                            <td class="positive">₹2,500.00</td>
+                                            <td><span class="prediction-badge prediction-down">72%</span></td>
+                                        </tr>
+                                        <tr>
+                                            <td>SBIN</td>
+                                            <td>₹585.45</td>
+                                            <td class="negative">₹570.00</td>
+                                            <td class="positive">₹595.00</td>
+                                            <td><span class="prediction-badge prediction-down">68%</span></td>
+                                        </tr>
+                                    </tbody>
+                                </table>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            
+            <div class="card mt-4">
+                <div class="card-header">Prediction Analysis</div>
+                <div class="card-body">
+                    <div class="chart-container">
+                        <canvas id="predictionChart"></canvas>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Frequency Variation Analysis -->
+        <div id="frequency" class="mt-5">
+            <h3 class="section-title">Frequency Variation Price Analysis</h3>
+            <p class="text-muted">Stocks with high frequency price variations - potential day trading opportunities</p>
+            
+            <div class="card">
+                <div class="card-header">
+                    <ul class="nav nav-tabs card-header-tabs">
+                        <li class="nav-item">
+                            <a class="nav-link active" data-bs-toggle="tab" href="#highFrequency">High Frequency</a>
+                        </li>
+                        <li class="nav-item">
+                            <a class="nav-link" data-bs-toggle="tab" href="#volumeSpike">Volume Spikes</a>
+                        </li>
+                        <li class="nav-item">
+                            <a class="nav-link" data-bs-toggle="tab" href="#breakout">Breakout Candidates</a>
+                        </li>
+                    </ul>
+                </div>
+                <div class="card-body">
+                    <div class="tab-content">
+                        <div class="tab-pane fade show active" id="highFrequency">
+                            <div class="table-responsive">
+                                <table class="table table-striped frequency-table">
+                                    <thead>
+                                        <tr>
+                                            <th>Stock</th>
+                                            <th>Price</th>
+                                            <th>5-min Change</th>
+                                            <th>Volatility</th>
+                                            <th>Avg. Spread</th>
+                                            <th>Action</th>
+                                        </tr>
+                                    </thead>
+                                    <tbody>
+                                        <tr>
+                                            <td>RELIANCE</td>
+                                            <td>₹2,758.45</td>
+                                            <td class="positive">+0.35%</td>
+                                            <td>High</td>
+                                            <td>₹4.50</td>
+                                            <td><span class="badge bg-success">Buy</span></td>
+                                        </tr>
+                                        <tr>
+                                            <td>HDFCBANK</td>
+                                            <td>₹1,642.25</td>
+                                            <td class="positive">+0.28%</td>
+                                            <td>Medium</td>
+                                            <td>₹3.20</td>
+                                            <td><span class="badge bg-success">Buy</span></td>
+                                        </tr>
+                                        <tr>
+                                            <td>INFY</td>
+                                            <td>₹1,845.60</td>
+                                            <td class="negative">-0.15%</td>
+                                            <td>High</td>
+                                            <td>₹5.10</td>
+                                            <td><span class="badge bg-danger">Sell</span></td>
+                                        </tr>
+                                        <tr>
+                                            <td>ICICIBANK</td>
+                                            <td>₹945.80</td>
+                                            <td class="positive">+0.42%</td>
+                                            <td>Medium</td>
+                                            <td>₹2.80</td>
+                                            <td><span class="badge bg-success">Buy</span></td>
+                                        </tr>
+                                        <tr>
+                                            <td>SBIN</td>
+                                            <td>₹585.45</td>
+                                            <td class="negative">-0.30%</td>
+                                            <td>Low</td>
+                                            <td>₹1.90</td>
+                                            <td><span class="badge bg-warning">Hold</span></td>
+                                        </tr>
+                                    </tbody>
+                                </table>
+                            </div>
+                        </div>
+                        <div class="tab-pane fade" id="volumeSpike">
+                            <p class="text-muted">Stocks with unusual volume activity - potential early signals</p>
+                            <div class="table-responsive">
+                                <table class="table table-striped frequency-table">
+                                    <thead>
+                                        <tr>
+                                            <th>Stock</th>
+                                            <th>Price</th>
+                                            <th>Volume</th>
+                                            <th>Avg. Volume</th>
+                                            <th>Volume Ratio</th>
+                                            <th>Action</th>
+                                        </tr>
+                                    </thead>
+                                    <tbody>
+                                        <tr>
+                                            <td>TATAMOTORS</td>
+                                            <td>₹645.30</td>
+                                            <td>8.5M</td>
+                                            <td>3.2M</td>
+                                            <td>2.66x</td>
+                                            <td><span class="badge bg-success">Buy</span></td>
+                                        </tr>
+                                        <tr>
+                                            <td>ADANIPORTS</td>
+                                            <td>₹845.75</td>
+                                            <td>6.2M</td>
+                                            <td>2.8M</td>
+                                            <td>2.21x</td>
+                                            <td><span class="badge bg-success">Buy</span></td>
+                                        </tr>
+                                        <tr>
+                                            <td>AXISBANK</td>
+                                            <td>₹1,045.50</td>
+                                            <td>9.1M</td>
+                                            <td>4.5M</td>
+                                            <td>2.02x</td>
+                                            <td><span class="badge bg-info">Watch</span></td>
+                                        </tr>
+                                        <tr>
+                                            <td>WIPRO</td>
+                                            <td>₹425.60</td>
+                                            <td>7.8M</td>
+                                            <td>5.2M</td>
+                                            <td>1.50x</td>
+                                            <td><span class="badge bg-warning">Hold</span></td>
+                                        </tr>
+                                    </tbody>
+                                </table>
+                            </div>
+                        </div>
+                        <div class="tab-pane fade" id="breakout">
+                            <p class="text-muted">Stocks approaching resistance levels with high breakout probability</p>
+                            <div class="table-responsive">
+                                <table class="table table-striped frequency-table">
+                                    <thead>
+                                        <tr>
+                                            <th>Stock</th>
+                                            <th>Price</th>
+                                            <th>Resistance</th>
+                                            <th>Support</th>
+                                            <th>Breakout Prob.</th>
+                                            <th>Action</th>
+                                        </tr>
+                                    </thead>
+                                    <tbody>
+                                        <tr>
+                                            <td>BAJFINANCE</td>
+                                            <td>₹7,245.35</td>
+                                            <td>₹7,300.00</td>
+                                            <td>₹7,100.00</td>
+                                            <td>85%</td>
+                                            <td><span class="badge bg-success">Buy</span></td>
+                                        </tr>
+                                        <tr>
+                                            <td>HINDUNILVR</td>
+                                            <td>₹2,458.90</td>
+                                            <td>₹2,500.00</td>
+                                            <td>₹2,400.00</td>
+                                            <td>75%</td>
+                                            <td><span class="badge bg-info">Watch</span></td>
+                                        </tr>
+                                        <tr>
+                                            <td>KOTAKBANK</td>
+                                            <td>₹1,945.80</td>
+                                            <td>₹1,980.00</td>
+                                            <td>₹1,900.00</td>
+                                            <td>80%</td>
+                                            <td><span class="badge bg-success">Buy</span></td>
+                                        </tr>
+                                        <tr>
+                                            <td>LT</td>
+                                            <td>₹3,245.60</td>
+                                            <td>₹3,300.00</td>
+                                            <td>₹3,200.00</td>
+                                            <td>70%</td>
+                                            <td><span class="badge bg-info">Watch</span></td>
+                                        </tr>
+                                    </tbody>
+                                </table>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            
+            <div class="card mt-4">
+                <div class="card-header">Frequency Variation Chart</div>
+                <div class="card-body">
+                    <div class="chart-container">
+                        <canvas id="frequencyChart"></canvas>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <footer class="bg-dark text-white mt-5 py-4">
+        <div class="container">
+            <div class="row">
+                <div class="col-md-6">
+                    <h5>Indian Stock Analytics</h5>
+                    <p>Real-time market data, predictions, and analysis for Indian stocks</p>
+                </div>
+                <div class="col-md-6 text-end">
+                    <p class="mb-0">© 2023 Indian Stock Analytics. All rights reserved.</p>
+                    <p class="small">Data provided by financial data providers</p>
+                </div>
+            </div>
+        </div>
+    </footer>
+
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0-alpha1/dist/js/bootstrap.bundle.min.js"></script>
+    <script>
+        document.addEventListener('DOMContentLoaded', function() {
+            // Stock Price Chart
+            const stockCtx = document.getElementById('stockChart').getContext('2d');
+            const stockChart = new Chart(stockCtx, {
+                type: 'line',
+                data: {
+                    labels: ['9:30', '10:00', '10:30', '11:00', '11:30', '12:00', '12:30', '13:00', '13:30', '14:00', '14:30', '15:00', '15:30'],
+                    datasets: [{
+                        label: 'RELIANCE Price',
+                        data: [2720, 2735, 2742, 2738, 2745, 2750, 2755, 2762, 2758, 2760, 2755, 2758, 2762],
+                        borderColor: '#3498db',
+                        backgroundColor: 'rgba(52, 152, 219, 0.1)',
+                        borderWidth: 2,
+                        fill: true,
+                        tension: 0.3
+                    }]
+                },
+                options: {
+                    responsive: true,
+                    maintainAspectRatio: false,
+                    plugins: {
+                        legend: {
+                            display: false
+                        },
+                        tooltip: {
+                            mode: 'index',
+                            intersect: false
+                        }
+                    },
+                    scales: {
+                        x: {
+                            grid: {
+                                display: false
+                            }
+                        },
+                        y: {
+                            beginAtZero: false,
+                            grid: {
+                                color: 'rgba(0, 0, 0, 0.05)'
+                            }
+                        }
+                    }
+                }
+            });
+
+            // Prediction Chart
+            const predictionCtx = document.getElementById('predictionChart').getContext('2d');
+            const predictionChart = new Chart(predictionCtx, {
+                type: 'bar',
+                data: {
+                    labels: ['RELIANCE', 'INFY', 'HDFCBANK', 'BAJFINANCE', 'TCS', 'ITC'],
+                    datasets: [{
+                        label: 'Predicted Gain %',
+                        data: [3.2, 2.8, 2.5, 2.1, 1.8, -1.5],
+                        backgroundColor: [
+                            'rgba(46, 204, 113, 0.7)',
+                            'rgba(46, 204, 113, 0.7)',
+                            'rgba(46, 204, 113, 0.7)',
+                            'rgba(46, 204, 113, 0.7)',
+                            'rgba(46, 204, 113, 0.7)',
+                            'rgba(231, 76, 60, 0.7)'
+                        ],
+                        borderColor: [
+                            'rgba(46, 204, 113, 1)',
+                            'rgba(46, 204, 113, 1)',
+                            'rgba(46, 204, 113, 1)',
+                            'rgba(46, 204, 113, 1)',
+                            'rgba(46, 204, 113, 1)',
+                            'rgba(231, 76, 60, 1)'
+                        ],
+                        borderWidth: 1
+                    }]
+                },
+                options: {
+                    responsive: true,
+                    maintainAspectRatio: false,
+                    plugins: {
+                        legend: {
+                            display: false
+                        }
+                    },
+                    scales: {
+                        y: {
+                            beginAtZero: true,
+                            title: {
+                                display: true,
+                                text: 'Predicted Change (%)'
+                            }
+                        }
+                    }
+                }
+            });
+
+            // Frequency Chart
+            const frequencyCtx = document.getElementById('frequencyChart').getContext('2d');
+            const frequencyChart = new Chart(frequencyCtx, {
+                type: 'line',
+                data: {
+                    labels: ['9:30', '10:00', '10:30', '11:00', '11:30', '12:00', '12:30', '13:00', '13:30', '14:00', '14:30', '15:00', '15:30'],
+                    datasets: [
+                        {
+                            label: 'RELIANCE',
+                            data: [0.1, 0.3, 0.2, 0.4, 0.35, 0.5, 0.45, 0.6, 0.55, 0.5, 0.65, 0.7, 0.75],
+                            borderColor: '#3498db',
+                            backgroundColor: 'rgba(52, 152, 219, 0.1)',
+                            borderWidth: 2,
+                            tension: 0.3
+                        },
+                        {
+                            label: 'HDFCBANK',
+                            data: [0.15, 0.25, 0.3, 0.35, 0.4, 0.35, 0.4, 0.45, 0.5, 0.55, 0.5, 0.55, 0.6],
+                            borderColor: '#2ecc71',
+                            backgroundColor: 'rgba(46, 204, 113, 0.1)',
+                            borderWidth: 2,
+                            tension: 0.3
+                        },
+                        {
+                            label: 'INFY',
+                            data: [0.2, 0.25, 0.3, 0.25, 0.3, 0.35, 0.3, 0.35, 0.4, 0.35, 0.4, 0.45, 0.4],
+                            borderColor: '#e74c3c',
+                            backgroundColor: 'rgba(231, 76, 60, 0.1)',
+                            borderWidth: 2,
+                            tension: 0.3
+                        }
+                    ]
+                },
+                options: {
+                    responsive: true,
+                    maintainAspectRatio: false,
+                    plugins: {
+                        tooltip: {
+                            mode: 'index',
+                            intersect: false
+                        }
+                    },
+                    scales: {
+                        y: {
+                            beginAtZero: true,
+                            title: {
+                                display: true,
+                                text: 'Price Variation (%)'
+                            }
+                        }
+                    }
+                }
+            });
+
+            // Search functionality
+            document.getElementById('searchBtn').addEventListener('click', function() {
+                const searchTerm = document.getElementById('searchInput').value;
+                if (searchTerm) {
+                    alert(`Searching for: ${searchTerm}`);
+                    // In a real application, this would fetch data for the searched stock
+                }
+            });
+
+            // Simulate real-time updates
+            setInterval(() => {
+                // Randomly update some values to simulate real-time changes
+                const randomChange = (Math.random() - 0.5) * 0.5;
+                const currentPrice = 2758.45 * (1 + randomChange / 100);
+                
+                document.querySelector('.card-header span').textContent = 'RELIANCE - Reliance Industries Ltd';
+                document.querySelector('.card-body h3').innerHTML = `₹${currentPrice.toFixed(2)} <span class="${randomChange >= 0 ? 'positive' : 'negative'}">${randomChange >= 0 ? '+' : ''}${randomChange.toFixed(2)}%</span>`;
+            }, 5000);
+        });
+    </script>
+</body>
 </html>
