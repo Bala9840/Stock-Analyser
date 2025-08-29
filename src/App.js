@@ -1,23 +1,32 @@
-import logo from './logo.svg';
+import React, { useState } from 'react';
+import Header from './components/Header';
+import Dashboard from './components/Dashboard';
+import Watchlist from './components/Watchlist';
+import NewsFeed from './components/NewsFeed';
 import './App.css';
 
 function App() {
+  const [activeTab, setActiveTab] = useState('dashboard');
+
+  const renderContent = () => {
+    switch (activeTab) {
+      case 'dashboard':
+        return <Dashboard />;
+      case 'watchlist':
+        return <Watchlist />;
+      case 'news':
+        return <NewsFeed />;
+      default:
+        return <Dashboard />;
+    }
+  };
+
   return (
     <div className="App">
-      <header className="App-header">
-        <img src={logo} className="App-logo" alt="logo" />
-        <p>
-          Edit <code>src/App.js</code> and save to reload.
-        </p>
-        <a
-          className="App-link"
-          href="https://reactjs.org"
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          Learn React
-        </a>
-      </header>
+      <Header activeTab={activeTab} setActiveTab={setActiveTab} />
+      <main className="main-content">
+        {renderContent()}
+      </main>
     </div>
   );
 }
