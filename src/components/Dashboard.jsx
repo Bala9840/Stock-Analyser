@@ -1,7 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import CandlestickChart from './CandlestickChart';
 import OptionAnalysis from './OptionAnalysis';
-import { TrendingUp, TrendingDown, AlertCircle } from 'lucide-react';
 import useStockData from '../hooks/useStockData';
 import StockCard from './StockCards';
 
