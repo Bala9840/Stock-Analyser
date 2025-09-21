@@ -2,7 +2,8 @@ import React, { useState } from 'react';
 import Header from './components/Header';
 import Dashboard from './components/Dashboard';
 import Watchlist from './components/Watchlist';
-import NewsFeed from './components/Newsfeed';
+import NewsFeed from "./components/NewsFeed";
+
 import './App.css';
 
 function App() {
