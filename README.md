@@ -117,7 +117,7 @@ Outputs to `/build` folder.
 ---
 
 ## 🖼️ Desktop View
-
+   
 <div align="center">
   <img src="SS/s1.png" alt="Stock Analysis Dashboard Screenshot" width="1000">
 </div><hr>
