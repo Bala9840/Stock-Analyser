@@ -116,11 +116,28 @@ Outputs to `/build` folder.
 
 ---
 
-## 🖼️ Output Screenshot
+## 🖼️ Desktop View
 
 <div align="center">
   <img src="SS/s1.png" alt="Stock Analysis Dashboard Screenshot" width="1000">
-</div>
+</div><hr>
+<div align="center">
+  <img src="SS/s2.png" alt="Stock Analysis Dashboard Screenshot" width="1000">
+</div><hr>
+<div align="center">
+  <img src="SS/s3.png" alt="Stock Analysis Dashboard Screenshot" width="1000">
+</div><hr>
+<div align="center">
+  <img src="SS/s4.png" alt="Stock Analysis Dashboard Screenshot" width="1000">
+</div><hr>
+
+---
+
+## 🖼️ Mobile View
+
+<div align="center">
+  <img src="SS/ph.png" alt="Stock Analysis Dashboard Screenshot" width="700">
+</div><hr>
 
 
 ---
@@ -159,4 +176,5 @@ See `LICENSE` for details.
 Built with ❤️ by **[Bala9840](https://github.com/Bala9840)**
 
 ---
+
 
