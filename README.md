@@ -1,5 +1,5 @@
 
-# 📊 Stock Analysis Dashboard
+# 📊 Stock Analysis Dashboard 
 
 A powerful and interactive **Stock Market Analysis Dashboard** built with **React.js**.
 Visualize candlestick charts, track stock options, manage your watchlist, and analyze stock patterns with ease. 🚀
@@ -176,5 +176,6 @@ See `LICENSE` for details.
 Built with ❤️ by **[Bala9840](https://github.com/Bala9840)**
 
 ---
+
 
 
