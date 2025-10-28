@@ -3,7 +3,7 @@
 
 A powerful and interactive **Stock Market Analysis Dashboard** built with **React.js**.
 Visualize candlestick charts, track stock options, manage your watchlist, and analyze stock patterns with ease. 🚀
-
+  
 <p align="left">
   <a href="https://react.dev/"><img alt="React" src="https://img.shields.io/badge/React-18+-blue"></a>
   <a href="https://www.chartjs.org/"><img alt="Charts" src="https://img.shields.io/badge/Charting-Candlestick/Line/Bar-green"></a>
@@ -176,6 +176,7 @@ See `LICENSE` for details.
 Built with ❤️ by **[Bala9840](https://github.com/Bala9840)**
 
 ---
+
 
 
 
