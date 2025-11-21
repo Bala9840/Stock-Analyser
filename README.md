@@ -1,4 +1,4 @@
-            
+             
 # 📊 Stock Analysis Dashboard   
  
 A powerful and interactive **Stock Market Analysis Dashboard** built with **React.js**.
