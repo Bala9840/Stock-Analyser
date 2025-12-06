@@ -11,7 +11,7 @@ Visualize candlestick charts, track stock options, manage your watchlist, and an
   <a href="#"><img alt="PRs" src="https://img.shields.io/badge/PRs-welcome-brightgreen"></a>
 </p>
 
----
+--- 
 
 ## ✨ Features
 
